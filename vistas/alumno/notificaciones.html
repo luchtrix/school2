@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="appLaescuela">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <title>Home</title>
+    <!-- obtenidos de la red -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--link href='http://fonts.which is googleapis.com/css?family=Roboto:400,300,300italic,500,400italic,700,700italic' rel='stylesheet' type='text/css'-->
+    <!--link rel="stylesheet" href="https://code.getmdl.io/1.0.1/material.teal-red.min.css" /-->
+    <!-- Hojas de estilos (css) -->
+    <link rel="stylesheet" type="text/css" href="../../css/material.teal-red.min.css">
+    <link href="../../css/plugin-min.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css">
+    <!-- para iconos -->
+    <link rel="stylesheet" type="text/css" href="../../font-awesome/css/font-awesome.css"/>
+    <!--  Scripts-->
+    <script src="../../js/jquery-2.1.1.min.js"></script>
+    <script src="../../js/angular.min.js"></script>
+    <script src="../../js/material.min.js"></script>
+    <script src="../../js/plugin-min.js"></script>
+    <!--script src="../../js/materialize.min.js"></script-->
+    <script src="../../js/socket.io-1.3.7.js"></script>
+    <script src="../../js/app/app_alumno.js"></script>
+</head>
+<body ng-controller="alumnoCtrl">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!--span class="mdl-layout-title"><i class="fa fa-pencil"></i> La Escuela</span-->
+            <span class="mdl-layout-title"><a style="color:white" href="home.html"><i class="fa fa-arrow-circle-left"></i></a></span>
+            <div class="mdl-layout-spacer"></div>
+            <div id="notificacion">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="notif">
+                    <i class="fa fa-bell-o"></i>
+                </button>
+            </div>
+            <ul id="allNotif" class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="notif">
+                <li class="mdl-menu__item"><a href="notificaciones.html"><i class="fa fa-bell"></i>Notificaciones</a></li>
+            </ul>
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+                <i class="fa fa-ellipsis-v"></i>
+            </button>
+            <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+                <!--li class="mdl-menu__item"><a href="#"><i class="fa fa-question"></i> Ayuda</a></li-->
+                <li class="mdl-menu__item"><a href="#" ng-click="logout()"><i class="fa fa-power-off"></i> Cerrar Session</a></li>>
+            </ul>
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">
+            <i class="fa fa-pencil"></i>  La Escuela
+        </span>
+        <div class="littlespace"><b> Maestro(a): {{usuario.ESCNOMM}}</b></div>
+        <div class="littlespace"><b> Correo Electrónico: {{usuario.ESCEMAM}}</b></div>
+        <br>
+        <div class="divider"></div>
+        <br>
+        <div class="mdl-navigation">
+            <a class="mdl-navigation__link" href="home.html"><i class="fa fa-home"></i> Inicio</a>
+            <!--a class="mdl-navigation__link" href="#"><i class="fa fa-users"></i> Grupos</a-->
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<div class="collapsible littlespace">
+    <div class="collapsible-header">
+        <div class="nav-wrapper">
+            <div class="col s12">
+                <b>
+                    Home / 
+                </b>
+                <b class="breadcrumb"> 
+                    Notificaciones
+                </b>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<!--{{allRel.length}}-->
+
+<div class="alert alert-danger" ng-if="notificationsMA == 0">No hay notificaciones</div>
+<!--p>Unidades de la Materia {{oneMateria.ESCNOMM}}</p-->
+<ul class="collection" style="margin:1px" ng-repeat="nn in notificationsMA">
+    <li class="collection-item avatar" ng-repeat="n in notifications" ng-if="n._id == nn.ESCIDNO">
+    <!--li class="collection-item avatar" ng-repeat="n in notifications" ng-if="n._id == nn.ESCIDNO && (nn.ESCTIPN == 'E' || nn.ESCTIPN == 'C')"-->
+        <a href="#" ng-click="verTarea(n.ESCIDUN, nn._id, nn.ESCVISN)">
+        <!--a href="agreements.html?unit={{n.ESCIDUN}}/"-->
+            <i class="fa fa-book circle blue"></i>
+            <span class="title"><b>{{n.ESCTITN}}</b></span>
+            <p style="color: black">
+                {{n.ESCCONN}} <br>    
+            </p>
+            <p ng-repeat="m in materiasM" ng-if="n.ESCMATN == m._id">Materia: {{m.ESCNOMM}}</p>
+            <b ng-if="nn.ESCVISN == 0" style="color:black"><i class="fa fa-eye"></i> No Visto</b>
+            <b ng-if="nn.ESCVISN == 1" style="color:green"><i class="fa fa-check-circle"></i> Visto</b>
+            <!--i class="fa fa-check-circle secondary-content"></i-->
+        </a>
+    </li>
+</ul>
+
+</body>
+</html>

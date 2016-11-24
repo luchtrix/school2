@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html ng-app="appLaescuela">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <title>Home</title>
+    <!-- obtenidos de la red -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--link href='http://fonts.which is googleapis.com/css?family=Roboto:400,300,300italic,500,400italic,700,700italic' rel='stylesheet' type='text/css'-->
+    <!--link rel="stylesheet" href="https://code.getmdl.io/1.0.1/material.teal-red.min.css" /-->
+    <!-- Hojas de estilos (css) -->
+    <link rel="stylesheet" type="text/css" href="../../css/material.teal-red.min.css">
+    <link href="../../css/plugin-min.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css">
+    <!-- para iconos -->
+    <link rel="stylesheet" type="text/css" href="../../font-awesome/css/font-awesome.css"/>
+    <!--  Scripts-->
+    <script src="../../js/jquery-2.1.1.min.js"></script>
+    <script src="../../js/angular.min.js"></script>
+    <script src="../../js/material.min.js"></script>
+    <script src="../../js/plugin-min.js"></script>
+    <script src="../../js/socket.io-1.3.7.js"></script>
+    <script src="../../js/app/app_alumno.js"></script>
+</head>
+<body ng-controller="alumnoCtrl">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!--span class="mdl-layout-title"><i class="fa fa-pencil"></i> La Escuela</span-->
+            <span class="mdl-layout-title"><a style="color:white" href="units.html?search={{oneMateria._id}}/{{idGrupo}}"><i class="fa fa-arrow-circle-left"></i></a></span>
+            <div class="mdl-layout-spacer"></div>
+            <div id="notificacion">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="notif">
+                    <i class="fa fa-bell-o"></i>
+                </button>
+            </div>
+            <ul id="allNotif" class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="notif">
+                <li class="mdl-menu__item"><a href="notificaciones.html"><i class="fa fa-bell"></i>  Notificaciones</a></li>
+            </ul>
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+                <i class="fa fa-ellipsis-v"></i>
+            </button>
+            <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+                <!--li class="mdl-menu__item"><a href="#"><i class="fa fa-question"></i> Ayuda</a></li-->
+                <li class="mdl-menu__item"><a href="#" ng-click="logout()"><i class="fa fa-power-off"></i> Cerrar Session</a></li>>
+            </ul>
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">
+            <i class="fa fa-pencil"></i>  La Escuela
+        </span>
+        <div class="littlespace"><b> Alumno: {{usuario.ESCNOMA}}</b></div>
+        <div class="littlespace"><b> Matrícula: {{usuario.ESCMATA}}</b></div>
+        <br>
+        <div class="divider"></div>
+        <br>
+        <div class="mdl-navigation">
+            <a class="mdl-navigation__link" href="home.html"><i class="fa fa-home"></i> Inicio</a>
+            <!--a class="mdl-navigation__link" href="#"><i class="fa fa-users"></i> Grupos</a-->
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<!--{{allRel.length}}-->
+<div id="main">
+        <div class="collapsible littlespace">
+            <div class="collapsible-header">
+                <div class="nav-wrapper">
+                    <div class="col s12">
+                        <b>
+                            Home / 
+                        </b>
+                        <b class="breadcrumb"> 
+                            Materia: {{oneMateria.ESCNOMM}}, Grupo: {{oneGrupo}} / 
+                        </b>
+                        <b>
+                            Unidad: {{oneUnidad.ESCNOMM}} -> Tareas
+                        </b>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <button class="mdl-button littlespace" ng-click="promedio()">Obtener Promedio de {{oneMateria.ESCNOMM}}: </button>
+        <b>{{miPromedio}}</b>
+        <!--h4>Mis Tareas</h4-->
+        <div class="alert alert-danger littlespace center" ng-if="tareas.length == 0"><i class="fa fa-ban"></i> Todavia no hay tareas para esta unidad</div>
+        <ul class="collection littlespace" ng-repeat="t in tareas">
+            <li class="collection-item avatar">
+                <a href="#" ng-click="showEnviar(t)">
+                    <i class="fa fa-pencil-square-o circle blue"></i>
+                    <span class="title">Tarea: {{t.ESCCONT}} ( Valor: {{t.ESCPUNT}} pts. ), {{t.ESCFECT}}</span>
+                    <span ng-if="t.status == 'ES'" style="background-color: green;color:#fff; ">Enviado antes de la fecha de entrega</span>
+                    <span ng-if="t.status == 'ED'" style="background-color: yellow;color:#fff; ">Enviado en tiempo</span>
+                    <span ng-if="t.status == 'EF'" style="background-color: red;color:#fff; ">Enviado fuera de tiempo</span>
+                    <br>
+                    {{t.ESCCALT}}
+                    <p style="color:black">
+                        La tarea trata de: "{{t.ESCBODT}}"<br>
+                        <!--Grupo: {{maestromaterias[$index].ESCIDEG}}-->
+                    </p>
+                    <p>
+                        Se entregará el dia: {{t.ESCLIMT}}
+                    </p>
+                    <p ng-if="t.ESCDEPT == ''" style="color: red;">
+                        <i class="fa fa-ban"></i> No tiene dependencias
+                    </p>
+                    <p ng-if="t.ESCDEPT != ''" style="color: black;">
+                        <p ng-repeat="tt in tareas" ng-if="tt._id == t.ESCDEPT">
+                            Depende de la: Tarea {{tt.ESCCONT}}
+                        </p>
+                    </p>
+                    <p ng-repeat="a in allRel" ng-if="a.ESCIDET == t._id && a.ESCIDEA == usuario._id && a.ESCCALT > -1">
+                        <b style="color: green"><i class="fa fa-check-circle"></i> Tarea Calificada: {{a.ESCCALT}}</b>
+                    </p>
+                    <p ng-repeat="a in allRel" ng-if="a.ESCIDET == t._id && a.ESCIDEA == usuario._id && a.ESCCALT == -1">
+                        <b style="color: red"><i class="fa fa-ban"></i> No se ha calificado esta tarea</b>
+                    </p>
+                    <!--p ng-repeat="d in allRel" ng-if="d.ESCIDET == t._id && usuario._id == d.ESCIDEA">
+                        -> {{d.ESCESTT}}
+                    </p-->
+                    <i class="fa fa-send secondary-content fa-2x" ng-if="tmpDataT.ESCESTT != 'P'"></i>
+                    <i class="fa fa-check-circle secondary-content fa-2x" ng-if="tmpDataT.ESCESTT == 'P'"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="enviar">
+        <!--h4>Mis Tareas</h4-->
+        <div class="collapsible littlespace">
+            <div class="collapsible-header">
+                <div class="nav-wrapper">
+                    <div class="col s12">
+                        <b>
+                            Home / 
+                        </b>
+                        <b class="breadcrumb"> 
+                            Materia: {{oneMateria.ESCNOMM}} / 
+                        </b>
+                        <b>
+                            Unidad: {{oneUnidad.ESCNOMM}} -> Tareas
+                        </b>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card" style="margin:0px 0px 0px 6px;">
+            <button class="btn-floating blue" style="margin:5px 0px 0px 10px;" ng-click="hideEnviar()">
+                <i class="fa fa-arrow-circle-left"></i>
+            </button>
+            <button class="right btn-floating blue" style="margin:5px 10px 0px 0px;" ng-click="enviarTarea()" ng-if="tmpDataT.ESCESTT == 'P' && (tmpDataTDep.ESCESTT != 'P' || dependenciatmp == null)">
+                <i class="fa fa-paper-plane"></i>
+            </button> 
+            <br>
+            <br>
+            <!--b ng-if="tmpTarea.ESCESTT == 'E'">Tarea Enviada</b-->
+            
+            <div class="alert alert-success center" ng-if="tmpDataT.ESCESTT != 'P' && tmpDataT.ESCCALT == -1"> <i class="fa fa-paper-plane"></i> <b> Tarea Enviada... Esperando calificación  </b> </div>
+
+            <div class="alert alert-info center" ng-if="tmpTarea.ESCESTT == 'R' && tmpDataT.ESCCALT > -1"> <i class="fa fa-thumbs-up"></i> <b> Tarea Calificada  </b> </div>
+
+            <div class="card-image waves-effect waves-block waves-light">
+                <!--h4 class="center">Nueva Tarea</h4-->
+            </div>
+            <div class="card-content">
+                <span class="card-title grey-text text-darken-4">
+                    <form>
+                        <div class="row">
+                            <p>
+                                <b><em>Tarea {{tmpTarea.ESCCONT}}:</em></b> 
+                                {{tmpTarea.ESCBODT}}
+                            </p>
+                            <p ng-if="dependenciatmp != null">
+                                <b><em>Depende de {{dependenciatmp.ESCCONT}}:</em></b> 
+                                {{dependenciatmp.ESCBODT}}
+                            </p>
+                            <p class="right"><em>Valor: {{tmpTarea.ESCPUNT}} pts.</em></p>
+
+                            <!--p ng-if="tmpDataT.ESCESTT == 'ES' && tmpDataT.ESCCALT == -1"><b><em>Respuesta (URL):</em></b> {{tmpDataT.ESCURLT}} ->  <a href="http://{{tmpDataT.ESCURLT}}" target="_blank">(Abrir Link)</a></p-->
+
+                            <p ng-if="tmpDataT.ESCESTT == 'ES' && tmpDataT.ESCCALT > -1">
+                                <b><em>Respuesta (URL):</em></b> {{tmpDataT.ESCURLT}} ->  
+                                <a href="http://{{tmpDataT.ESCURLT}}" target="_blank">(Abrir Link)</a>
+                                <br>
+                                <b>Calificación: {{tmpDataT.ESCCALT}}</b>
+                                <br>
+                                <b><em>Observación hecha por el profesor:</em></b> {{tmpDataT.ESCOBST}}
+                            </p>
+
+                            <div class="input-field col s12 center" ng-if="tmpDataT.ESCCALT == -1">
+                                
+                                <input ng-if="tmpDataT.ESCESTT == 'P' && (dependenciatmp == null || tmpDataTDep.ESCESTT != 'P')" type="text" id="location" placeholder="Agrega la URL donde subiste tu tarea">
+                                
+                                <div id="message"></div>
+                                <!--p class="alert alert-danger" id="message"></p-->
+
+                                <p ng-if="tmpDataTDep.ESCESTT == 'P'">
+                                    <b><em>Esta tarea no puede ser enviada hasta que se realiace la tarea de la cual depende.</em></b> 
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </span>
+                <!--p><a href="#">This is a link</a></p-->
+            </div>
+        </div>
+    </div>
+    <!--dialog class="mdl-dialog">
+        <div class="mdl-dialog__content">
+            <p>
+                
+            </p>
+        </div>
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button type="button" class="mdl-button center close">Cerrar</button>
+        </div>
+    </dialog-->
+    <script type="text/javascript">
+        $('.datepicker').pickadate({
+            format: "dd/mm/yyyy",
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15 // Creates a dropdown of 15 years to control year
+        });
+    </script>
+</body>
+</html>

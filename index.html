@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="appLaescuela">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+	<title>Home</title>
+	<!-- Hojas de estilos (css) -->
+    <link rel='stylesheet' href='css/bootstrap.min.css'>
+    <link rel='stylesheet' href='css/estilos.css'>
+    <link rel='stylesheet' href='css/custom.css'>
+	<!--link rel="stylesheet" href="css/material.min.css"-->
+    <!-- para iconos -->
+    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"/>
+    <!--  Scripts-->
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app/app_inicio.js"></script>
+    <!--<script type="text/javascript" src="cordova.js"></script>-->
+</head>
+<body ng-controller='inicioCtrl'>
+    <div class="login">
+        <h1>
+            <a href="#">
+                <i class="fa fa-pencil"></i>
+                La Escuela
+            </a>
+        </h1>
+        <div class="login-bottom">
+            <div class="msjError"></div>
+            <h2 class="text-center">Iniciar Sesión</h2>
+            <form role="form" ng-submit="login()">
+                <div class="col-md-12">
+                    Telefono Celular
+                    <br>
+                    <div class="login-mail">
+                        <input type="text" placeholder="Télefono Celular" ng-model="usuario.Celular" required>
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    Contraseña
+                    <br>
+                    <div class="login-mail">
+                        <input type="password" placeholder="Contraseña" ng-model="usuario.Clave" required>
+                        <i class="fa fa-lock"></i>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" >Iniciar Sesión <i class="fa fa-unlock"></i></button>
+                    </div>
+                    <!--label class="hvr-shutter-in-horizontal.login-sub.login-do center">
+                        <input class="btn btn-primary" type="submit" value="Entrar"/>
+                    </label-->
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
